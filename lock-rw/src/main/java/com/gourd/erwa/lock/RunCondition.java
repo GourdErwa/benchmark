@@ -25,7 +25,7 @@ class RunCondition {
         this.roundNum = roundNum;
     }
 
-    //get 方法必须为 public ，FastJSON JSON时 调用
+    //get 方法必须为 public ，FastJSON JSON时
     public int getFullNum() {
         return fullNum;
     }
@@ -44,8 +44,7 @@ class RunCondition {
 
     @Override
     public String toString() {
-
-        return String.format(
+      return String.format(
                 "fullNum[%d]readThreadNum[%d]writeThreadNum[%d]roundNum[%d]",
                 fullNum, readThreadNum, writeThreadNum, roundNum
         );
