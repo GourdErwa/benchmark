@@ -16,7 +16,7 @@ Code cleanliness
 ## List
 | 测试       | 说明         |
 | ---------- |:------------:|
-|读写实现测试  | [示例](https://github.com/GourdErwa/benchmark/tree/master/lock-rw/doc)         |
+|读写实现测试  | [示例](https://github.com/GourdErwa/benchmark/tree/master/lock-rw)         |
 
 
 ## About me
