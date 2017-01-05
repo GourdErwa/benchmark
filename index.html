@@ -1,12 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>benchmark</title>
+    <meta charset="utf-8">
+    <title>ECharts</title>
 </head>
 <body>
+<a href="https://github.com/GourdErwa/benchmark/tree/master/lock-rw" target="_blank"
+   style="margin-left: 5%;margin-top: 10px;align-content:space-around">
+    By GitHub
+</a>
 
-benchmark
-
+<div id="main" style="margin-top: 50px"></div>
 </body>
+<script src="./index/resources/echarts.min.js"></script>
+
+<script type="text/javascript">
+
+    //窗口宽高
+    var maxWidth = window.innerWidth;
+    var maxHeight = window.innerHeight;
+
+    window.onresize = function () {
+        maxWidth = window.innerWidth;
+        maxHeight = window.innerHeight;
+    };
+
+    var jsonData = {
+        "runCondition": {
+            "fullNum": 100000,
+            "readThreadNum": 1,
+            "writeThreadNum": 15,
+            "roundNum": 20
+        },
+        "data": [
+            {
+                "type": "READ_WRITE_LOCK",
+                "avgTime": 11.3,
+                "times": [
+                    12,
+                    7,
+                    7
+                ]
+            }
+        ]
+    };
+    var url = 'lock-rw/example-data/';
+    var jsonFiles = [
+        "fullNum[100000]readThreadNum[1]writeThreadNum[15]roundNum[20].json",
+        "fullNum[100000]readThreadNum[2]writeThreadNum[8]roundNum[20].json",
+        "fullNum[100000]readThreadNum[5]writeThreadNum[5]roundNum[20].json",
+        "fullNum[100000]readThreadNum[8]writeThreadNum[2]roundNum[20].json",
+        "fullNum[100000]readThreadNum[10]writeThreadNum[10]roundNum[20].json",
+        "fullNum[100000]readThreadNum[15]writeThreadNum[1]roundNum[20].json"
+    ];
+
+    var eachCharts = function (jsonData) {
+
+        var runCondition = jsonData.runCondition;
+        var titleText = "R-" + runCondition.readThreadNum + " / W-" + runCondition.writeThreadNum;
+        var titleSubtext = "事件数量 = " + runCondition.fullNum + " , 执行次数 = " + runCondition.roundNum;
+
+        var legendData = [];
+        var series = [];
+
+        jsonData.data.forEach(function (v) {
+            console.log(v);
+            var type = v.type;
+            var avgTime = v.avgTime;
+
+            legendData.push(type);
+            series.push({
+                name: type,
+                type: 'bar',
+                data: [avgTime],
+                animationDelay: function (idx) {
+                    return idx * 10;
+                }
+            });
+        });
+
+        return {
+            title: {
+                text: "并发读写测试 [ " + titleText + " ]",
+                link: "https://github.com/GourdErwa/benchmark/tree/master/lock-rw",
+                subtext: titleSubtext,
+                x: 'center',
+                align: 'right'
+            },
+            legend: {
+                data: legendData,
+                align: 'left',
+                y: 'bottom'
+            },
+            toolbox: {
+                //y: 'bottom',
+                feature: {
+                    magicType: {
+                        type: ['stack', 'tiled']
+                    },
+                    dataView: {},
+                    saveAsImage: {
+                        pixelRatio: 2
+                    }
+                }
+            },
+            tooltip: {},
+            xAxis: {
+                name: "实现方式",
+                //横轴不展示内容
+                data: [],
+                silent: true,
+                splitLine: {
+                    show: false
+                }
+            },
+            yAxis: {
+                name: "耗时(ms)"
+            },
+            series: series,
+            animationEasing: 'elasticOut',
+            animationDelayUpdate: function (idx) {
+                return idx * 5;
+            }
+        };
+    };
+
+
+    // 在IE7下测试通过，IE6下必须创建 new ActiveXObject("MSXML2.XMLHTTP.6.0")
+
+    jsonFiles.forEach(function (v) {
+        var request = new XMLHttpRequest();
+
+        request.open('GET', url + v);
+
+        request.onreadystatechange = function () {
+            if (request.readyState === 4 && request.status === 200) {
+                jsonData = eval('(' + request.responseText + ')');
+
+                var option = eachCharts(jsonData);
+                var o = document.getElementById("main");
+                var newChild = o.cloneNode(true);
+                newChild.style.height = (maxHeight - 200) + "px";
+                //newChild.style.widths = (maxWidth - 200) + "px";
+                document.body.appendChild(newChild);
+
+                var myChart = echarts.init(newChild);
+
+                myChart.setOption(option);
+            }
+        };
+        request.send(null);
+
+    });
+
+</script>
+
+
 </html>
