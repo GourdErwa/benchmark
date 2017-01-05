@@ -28,7 +28,7 @@ class Main {
     //写线程数量
     private static final int WRITE_THREAD_NUM = 5;
     //循环次数
-    private static final int ROUND_NUM = 5;
+    private static final int ROUND_NUM = 20;
     //运行模拟条件
     private static final RunCondition RUN_CONDITION = RunCondition.Builder.create()
             .setFullNum(FULL_NUM)
