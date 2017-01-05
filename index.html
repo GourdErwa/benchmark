@@ -4,11 +4,18 @@
     <meta charset="utf-8">
     <title>基准测试-并发读写测试</title>
 </head>
+<style>
+    div {
+        margin: 0 auto;
+    }
+</style>
 <body>
-<a href="https://github.com/GourdErwa/benchmark/tree/master/lock-rw" target="_blank"
-   style="margin-left: 5%;margin-top: 20px;">
-    测试数据-源码 下载
-</a>
+<div>
+    <a href="https://github.com/GourdErwa/benchmark/tree/master/lock-rw" target="_blank"
+       style="margin-left: 5%;margin-top: 20px;">
+        测试数据-源码 下载
+    </a>
+</div>
 
 <div id="main" style="margin-top: 80px"></div>
 </body>
@@ -140,8 +147,8 @@
                 var option = eachCharts(jsonData);
                 var o = document.getElementById("main");
                 var newChild = o.cloneNode(true);
-                newChild.style.height = (maxHeight - maxHeight/4) + "px";
-                //newChild.style.widths = (maxWidth - 200) + "px";
+                newChild.style.height = (maxHeight - maxHeight / 3) + "px";
+                newChild.style.width = (maxWidth - maxWidth / 3) + "px";
                 document.body.appendChild(newChild);
 
                 var myChart = echarts.init(newChild);
