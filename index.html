@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>ECharts</title>
+    <title>基准测试-并发读写测试</title>
 </head>
 <body>
 <a href="https://github.com/GourdErwa/benchmark/tree/master/lock-rw" target="_blank"
@@ -10,7 +10,7 @@
     测试数据-源码 下载
 </a>
 
-<div id="main" style="margin-top: 50px"></div>
+<div id="main" style="margin-top: 80px"></div>
 </body>
 <script src="./index/resources/echarts.min.js"></script>
 
@@ -140,7 +140,7 @@
                 var option = eachCharts(jsonData);
                 var o = document.getElementById("main");
                 var newChild = o.cloneNode(true);
-                newChild.style.height = (maxHeight - maxHeight/3) + "px";
+                newChild.style.height = (maxHeight - maxHeight/4) + "px";
                 //newChild.style.widths = (maxWidth - 200) + "px";
                 document.body.appendChild(newChild);
 
