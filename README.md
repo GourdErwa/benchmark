@@ -5,6 +5,7 @@
 [![IntelliJIDEA Central](https://img.shields.io/badge/IntelliJIDEA-v2017.1-green.svg?style=flat-square&maxAge=2592000)]()
 [![Maven Central](https://img.shields.io/badge/Maven-v3.3.9-green.svg?style=flat-square&maxAge=2592000)]()
 [![JDK Central](https://img.shields.io/badge/JDK-v1.8-green.svg?style=flat-square&maxAge=2592000)]()
+
 ## Learning resources
 
 ## Introduction
