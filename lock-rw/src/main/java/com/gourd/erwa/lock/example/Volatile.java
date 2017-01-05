@@ -10,6 +10,9 @@ import java.util.List;
 /**
  * 深入理解Java内存模型（四）——volatile
  * http://ifeve.com/java-memory-model-4/
+ * <p>
+ * volatile是否能保证数组中元素的可见性
+ * http://ifeve.com/volatile-array-visiblity/
  *
  * @author wei.Li
  */

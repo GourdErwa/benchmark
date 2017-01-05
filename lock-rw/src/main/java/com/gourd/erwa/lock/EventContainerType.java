@@ -22,7 +22,9 @@ public enum EventContainerType {
 
     SYNCHRONIZE(Synchronize.class),
 
-    VOLATILE(Volatile.class);
+    VOLATILE(Volatile.class),
+
+    NO_THREAD_SAFE(NoThreadSafe.class);
 
     private Class<? extends EventContainer> aClass;
 
