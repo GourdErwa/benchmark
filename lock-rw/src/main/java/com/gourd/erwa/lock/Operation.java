@@ -1,13 +1,14 @@
 package com.gourd.erwa.lock;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
 
 /**
  * 读写操作
  *
  * @author wei.Li
  */
-abstract class Operation implements Runnable {
+abstract class Operation implements Callable<Boolean> {
 
     private EventContainer eventContainer;
     private RunCondition runCondition;
@@ -18,13 +19,6 @@ abstract class Operation implements Runnable {
         this.runCondition = runCondition;
     }
 
-    private void checkStop(int size) {
-
-        if (size < this.runCondition.getFullNum()) {
-            return;
-        }
-        Main.stop(EventContainerType.forClass(this.eventContainer.getClass()));
-    }
 
     public static class Reader extends Operation {
 
@@ -34,7 +28,7 @@ abstract class Operation implements Runnable {
         }
 
         @Override
-        public void run() {
+        public Boolean call() throws Exception {
 
             while (true) {
 
@@ -44,9 +38,11 @@ abstract class Operation implements Runnable {
 
                 final Collection<Event> events = super.eventContainer.read();
 
-                super.checkStop(events.size());
-
+                if (events.size() > super.runCondition.getFullNum()) {
+                    break;
+                }
             }
+            return true;
         }
     }
 
@@ -58,7 +54,7 @@ abstract class Operation implements Runnable {
         }
 
         @Override
-        public void run() {
+        public Boolean call() throws Exception {
 
             while (true) {
                 if (Thread.interrupted()) {
@@ -67,6 +63,7 @@ abstract class Operation implements Runnable {
                 super.eventContainer.write(new Event() {
                 });
             }
+            return true;
         }
     }
 }
