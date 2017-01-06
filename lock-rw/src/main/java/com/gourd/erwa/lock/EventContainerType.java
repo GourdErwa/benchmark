@@ -12,29 +12,35 @@ import java.util.Arrays;
  */
 public enum EventContainerType {
 
-    READ_WRITE_LOCK(ReadWriteLock.class),
+    READ_WRITE_LOCK("ReadWriteLock", ReadWriteLock.class),
 
-    REENTRANT_LOCK(ReentrantLock.class),
+    REENTRANT_LOCK("ReentrantLock", ReentrantLock.class),
 
-    STAMPED(Stamped.class),
+    STAMPED("StampedLock", Stamped.class),
 
-    OPTIMISTIC_STAMPED(OptimisticStamped.class),
+    OPTIMISTIC_STAMPED("OptimisticStamped", OptimisticStamped.class),
 
-    SYNCHRONIZE(Synchronize.class),
+    SYNCHRONIZE("Synchronize", Synchronize.class),
 
-    VOLATILE(Volatile.class),
+    VOLATILE("Volatile", Volatile.class),
 
-    NO_THREAD_SAFE(NoThreadSafe.class);
+    NO_THREAD_SAFE("NoThreadSafe", NoThreadSafe.class);
 
+    private String describe;
     private Class<? extends EventContainer> aClass;
 
-    EventContainerType(Class<? extends EventContainer> aClass) {
+    EventContainerType(String describe, Class<? extends EventContainer> aClass) {
+        this.describe = describe;
         this.aClass = aClass;
     }
 
     public static EventContainerType forClass(Class<? extends EventContainer> aClass) {
 
         return Arrays.stream(EventContainerType.values()).filter(c -> c.aClass.equals(aClass)).findFirst().orElse(null);
+    }
+
+    public String getDescribe() {
+        return describe;
     }
 
     public Class<? extends EventContainer> getaClass() {

@@ -32,7 +32,7 @@
         maxHeight = window.innerHeight;
     };
 
-    var jsonData = {
+    var jsonDataDefault = {
         "runCondition": {
             "fullNum": 100000,
             "readThreadNum": 1,
@@ -51,27 +51,62 @@
             }
         ]
     };
+
+    String.prototype.format = String.prototype.f = function () {
+        var s = this,
+            i = arguments.length;
+
+        while (i--) {
+            s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+        }
+        return s;
+    };
+
+
+    //读取 JSON 前缀 URL
     var url = 'lock-rw/example-data/';
-    var jsonFiles = [
-        "fullNum[100000]readThreadNum[1]writeThreadNum[15]roundNum[20].json",
-        "fullNum[100000]readThreadNum[2]writeThreadNum[8]roundNum[20].json",
-        "fullNum[100000]readThreadNum[5]writeThreadNum[5]roundNum[20].json",
-        "fullNum[100000]readThreadNum[8]writeThreadNum[2]roundNum[20].json",
-        "fullNum[100000]readThreadNum[10]writeThreadNum[10]roundNum[20].json",
-        "fullNum[100000]readThreadNum[15]writeThreadNum[1]roundNum[20].json"
+    //JSON 文件名称格式， 使用 supportReadWriteThreadNum 对应格式化
+    var jsonFileFormat = "fullNum[100000]readThreadNum[{0}]writeThreadNum[{1}]roundNum[20].json";
+
+    //支持读写线程数
+    var supportReadWriteThreadNum = [
+        {
+            r: 1,
+            w: 15
+        }, {
+            r: 2,
+            w: 8
+        }, {
+            r: 5,
+            w: 5
+        }, {
+            r: 8,
+            w: 2
+        }, {
+            r: 10,
+            w: 10
+        }, {
+            r: 15,
+            w: 1
+        }
     ];
 
+
+    /**
+     *
+     * @param jsonData 绘画图标数据
+     */
     var eachCharts = function (jsonData) {
 
         var runCondition = jsonData.runCondition;
         var titleText = "R-" + runCondition.readThreadNum + " / W-" + runCondition.writeThreadNum;
-        var titleSubtext = "事件数量 = " + runCondition.fullNum + " , 执行次数 = " + runCondition.roundNum;
+        var titleSubtext = "事件数量 = " + runCondition.fullNum + " , 执行次数 = " + runCondition.roundNum + " , 去掉最小最大值计算平均耗时";
 
         var legendData = [];
         var series = [];
 
         jsonData.data.forEach(function (v) {
-            console.log(v);
+
             var type = v.type;
             var avgTime = v.avgTime;
 
@@ -89,7 +124,7 @@
         return {
             title: {
                 text: "并发读写测试 [ " + titleText + " ]",
-                link: "https://github.com/GourdErwa/benchmark/tree/master/lock-rw",
+                link: "https://github.com/GourdErwa/benchmark/tree/master/lock-supportReadWriteThreadNum",
                 subtext: titleSubtext,
                 x: 'center',
                 align: 'right'
@@ -122,7 +157,7 @@
                 }
             },
             yAxis: {
-                name: "耗时(ms)"
+                name: "平均耗时(ms)"
             },
             series: series,
             animationEasing: 'elasticOut',
@@ -133,30 +168,37 @@
     };
 
 
-    // 在IE7下测试通过，IE6下必须创建 new ActiveXObject("MSXML2.XMLHTTP.6.0")
+    var $chartDom = document.getElementById("main");
 
-    jsonFiles.forEach(function (v) {
+    supportReadWriteThreadNum.forEach(function (v) {
+
         var request = new XMLHttpRequest();
 
-        request.open('GET', url + v);
+        var jsonFileName = jsonFileFormat.format(v.r, v.w);
+        request.open('GET', url + jsonFileName);
 
         request.onreadystatechange = function () {
             if (request.readyState === 4 && request.status === 200) {
-                jsonData = eval('(' + request.responseText + ')');
+                var jsonData = eval('(' + request.responseText + ')');
+
+                console.log("jsonFileName->" + jsonFileFormat);
+                console.table(jsonData);
+                console.log("");
+
 
                 var option = eachCharts(jsonData);
-                var o = document.getElementById("main");
-                var newChild = o.cloneNode(true);
-                newChild.style.height = (maxHeight - maxHeight / 3) + "px";
-                newChild.style.width = (maxWidth - maxWidth / 3) + "px";
-                document.body.appendChild(newChild);
 
-                var myChart = echarts.init(newChild);
+                var cloneDom = $chartDom.cloneNode(true);
+                cloneDom.style.height = (maxHeight - maxHeight / 3) + "px";
+                cloneDom.style.width = (maxWidth - maxWidth / 3) + "px";
+                document.body.appendChild(cloneDom);
+
+                var myChart = echarts.init(cloneDom);
 
                 myChart.setOption(option);
             }
         };
-        request.send(null);
+        request.send();
 
     });
 

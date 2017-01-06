@@ -31,9 +31,10 @@ public class Result {
 }
 
 class Part {
+
     //测试数据类型
     @JSONField(ordinal = 1)
-    private EventContainerType type;
+    private String type;
     //时间点平均时间
     @JSONField(ordinal = 2)
     private double avgTime;
@@ -42,12 +43,14 @@ class Part {
     private List<Long> times;
 
     Part(EventContainerType type, List<Long> times) {
-        this.type = type;
+        this.type = type.getDescribe();
         this.times = times;
-        this.avgTime = times.stream().mapToLong(value -> value).average().orElse(-1D);
+        final int size = times.size();
+        //去掉最小值最大值求平均数，size == 0 异常不处理
+        this.avgTime = size == 1 ? times.get(0) : times.stream().sorted().skip(0).limit(size - 1).mapToLong(value -> value).average().orElse(-1D);
     }
 
-    public EventContainerType getType() {
+    public String getType() {
         return type;
     }
 
